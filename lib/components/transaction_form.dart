@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'adaptative_button.dart';
+import 'adaptative_text_field.dart';
+import 'adaptative_date_picker.dart';
 
 class TransactionForm extends StatefulWidget {
 
@@ -27,19 +29,6 @@ class _TransactionFormState extends State<TransactionForm> {
     widget.onSubmit(title, value, _selectedDate);
   }
 
-  _showDatePicker(){
-    showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2019),
-      lastDate: DateTime.now(),
-    ).then((pikedDate) {
-      setState(() {
-        _selectedDate = pikedDate;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -54,59 +43,32 @@ class _TransactionFormState extends State<TransactionForm> {
           ),
           child: Column(
             children: <Widget>[
-              TextField(
+              AdaptativeTextField(
                 controller: _titleController,
                 onSubmitted: (_)=> _submitForm(),
-                decoration: InputDecoration(
-                  labelText: 'Título'
-                ),
+                label: 'Título',
               ),
-              TextField(
+              AdaptativeTextField(
                 controller: _valueController,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                 onSubmitted: (_)=> _submitForm(),
-                decoration: InputDecoration(
-                  labelText: 'Valor (R\$)'
-                ),
+                label: 'Valor (R\$)',
               ),
-              Container(
-                height: 70,
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Row(
-                        children: <Widget>[
-                          Icon(Icons.calendar_today),
-                          Text(
-                            _selectedDate == DateTime.now()
-                            ? '${DateFormat('dd/MM/y').format(DateTime.now())}'
-                            : DateFormat('dd/MM/y').format(_selectedDate), 
-                          ),
-                        ],
-                      ),
-                    ),
-                    FlatButton(
-                      textColor: Theme.of(context).primaryColor,
-                      child: Text(
-                        'Selecionar data.',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      onPressed: _showDatePicker,
-                    )
-                  ],
-                ),
+              AdaptativeDatePicker(
+                selectedDate: _selectedDate,
+                onDateChanged: (newDate){
+                  setState(() {
+                    _selectedDate = newDate;
+                  });
+                },
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  RaisedButton(
-                    child: Text('Nova transação'),
-                    color: Theme.of(context).primaryColor,
-                    textColor: Theme.of(context).textTheme.button.color,
+                  AdaptativeButton(
+                    label: 'Nova Transação',
                     onPressed: _submitForm,
-                  ),
+                  )
                 ],
               )
             ],
